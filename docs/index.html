@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TMDB Movies — DS4200 Final Project</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Stories in the Data: Exploring the TMDB Movie Catalog</h1>
+      <p>
+        A course project that uses descriptive visualization to summarize how films in a TMDB sample vary by time, genre, runtime, numeric
+        relationships, and financial scale.
+      </p>
+    </header>
+
+    <main>
+      <section id="intro">
+        <h2>Introduction</h2>
+        <p>
+          Our team studies publicly listed movies from The Movie Database (TMDB) to understand long-run catalog growth, genre mix, typical
+          runtimes, correlations among numeric popularity fields, and how reported budget relates to revenue when both are available. The
+          tasks were to sample and clean the table, build five linked views that move from <em>when</em> films appear in the data to
+          <em>what kinds</em> of films they are and <em>how money and ratings behave</em>, and to implement interactions so visitors can
+          focus on a time range, genre, or voting threshold without editing code.
+        </p>
+      </section>
+
+      <section id="data">
+        <h2>Data</h2>
+        <p>
+          We use a random sample of <strong>10,000 rows</strong> saved as <code>TMDB_movie_dataset_v11_10000.csv</code>, drawn from the
+          larger TMDB-derived file described on Open Data soft / Kaggle-style mirrors of TMDB exports. Each row is one title with
+          <strong>24 attributes</strong>, including identifiers, text fields (<code>title</code>, <code>overview</code>),
+          <code>release_date</code>, <code>genres</code> (comma-separated labels), <code>vote_average</code>, <code>vote_count</code>,
+          <code>revenue</code>, <code>budget</code>, <code>runtime</code>, <code>popularity</code>, and production country and language
+          metadata. Missing values are common for optional text; we restrict certain charts to rows with positive runtime or positive budget
+          and revenue where needed.
+        </p>
+        <p><strong>References</strong></p>
+        <ul class="ref-list">
+          <li>
+            <a href="https://developer.themoviedb.org/docs" target="_blank" rel="noopener">The Movie Database (TMDB) API documentation</a>
+          </li>
+          <li>
+            <a href="https://www.kaggle.com/datasets/akashguna/tmdb-movies-dataset" target="_blank" rel="noopener"
+              >Kaggle: TMDB movies dataset (community export used in many courses)</a
+            >
+          </li>
+        </ul>
+      </section>
+
+      <section id="viz-overview">
+        <h2>1. Release-year trend (D3 — line + brush)</h2>
+        <div class="viz-block">
+          <p class="caption-title">Figure 1. Count of sampled films by release year</p>
+          <p class="howto">
+            <strong>How to use:</strong> Drag a window on the lower orange timeline (brush). The main teal line and area rescale to that
+            year range so you can compare growth in the streaming era versus earlier decades.
+          </p>
+          <div id="chart-timeline" class="d3-wrap" aria-label="Line chart of film counts by year"></div>
+          <p class="takeaway">
+            <strong>Takeaway:</strong> The sample is densest after roughly 2000, with a visible rise through the 2010s—consistent with more
+            titles being cataloged and more international releases represented in TMDB over time.
+          </p>
+        </div>
+      </section>
+
+      <section id="viz-genres">
+        <h2>2. Genre mix (Altair — bar chart)</h2>
+        <div class="viz-block">
+          <p class="caption-title">Figure 2. Twelve most frequent primary genre tags (films can list multiple genres)</p>
+          <img src="assets/generated/altair_genres.png" alt="Horizontal bar chart of top TMDB genres in the sample" />
+          <p class="takeaway">
+            <strong>Takeaway:</strong> Drama, Comedy, and Documentary-style labels dominate this slice, which frames later views: the catalog
+            skews toward broad audience genres rather than niche categories alone.
+          </p>
+        </div>
+      </section>
+
+      <section id="viz-runtime">
+        <h2>3. Runtime distribution (Altair — linked histogram)</h2>
+        <div class="viz-block">
+          <p class="caption-title">Figure 3. Histogram of runtime with linked brush</p>
+          <p class="howto">
+            <strong>How to use:</strong> Click and drag on the x-axis of the top histogram to select a runtime range; the lower panel shows
+            the filtered distribution.
+          </p>
+          <iframe src="assets/generated/altair_runtime_brush.html" title="Interactive Altair runtime histogram"></iframe>
+          <p class="takeaway">
+            <strong>Takeaway:</strong> Most non-missing runtimes cluster between roughly 80 and 120 minutes, matching conventional feature
+            length; very short or very long films are rare in this sample.
+          </p>
+        </div>
+      </section>
+
+      <section id="viz-heatmap">
+        <h2>4. Numeric associations (Matplotlib — heatmap)</h2>
+        <div class="viz-block">
+          <p class="caption-title">Figure 4. Correlation heatmap (log-scaled skewed fields)</p>
+          <img
+            src="assets/generated/heatmap_correlation.png"
+            alt="Heatmap of correlations between vote average, vote count, revenue, runtime, popularity, and budget"
+          />
+          <p class="takeaway">
+            <strong>Takeaway:</strong> Vote count and popularity move together, while vote average is only weakly related to revenue—big
+            box office and high user rating are not the same dimension in this data.
+          </p>
+        </div>
+      </section>
+
+      <section id="viz-scatter">
+        <h2>5. Budget vs. revenue (D3 — scatter)</h2>
+        <div class="viz-block">
+          <p class="caption-title">Figure 5. Log-scale scatter for titles with positive budget and revenue</p>
+          <p class="howto">
+            <strong>How to use:</strong> Choose a primary genre from the menu to restrict points; use the minimum vote-count slider to drop
+            obscure titles with almost no ratings. Hover any dot for exact budget, revenue, and rating.
+          </p>
+          <div class="controls-row">
+            <label>
+              Genre
+              <select id="scatter-genre" aria-label="Filter by genre">
+                <option value="all">All genres</option>
+              </select>
+            </label>
+            <label>
+              Min. votes
+              <input type="range" id="scatter-votes" min="0" max="500" value="0" step="10" aria-valuemin="0" aria-valuemax="500" />
+              <span id="scatter-votes-label">0</span>
+            </label>
+          </div>
+          <div id="chart-scatter" class="d3-wrap" aria-label="Scatter of budget versus revenue"></div>
+          <div id="scatter-tooltip" class="tooltip-d3" style="opacity: 0"></div>
+          <p class="takeaway">
+            <strong>Takeaway:</strong> On log scales, many films sit near the diagonal (similar order of magnitude for budget and revenue),
+            while blockbusters stretch far along the revenue axis—genre filtering shows that pattern holds across several major categories.
+          </p>
+        </div>
+      </section>
+
+      <section id="summary">
+        <h2>Summary and next steps</h2>
+        <p>
+          <strong>Findings.</strong> Catalog coverage in TMDB is uneven over time but clearly thickens after 2000; genres in our sample lean
+          toward Drama and Comedy; runtimes concentrate near standard feature length; user engagement (votes, popularity) is a different
+          signal from average rating; and budget–revenue comparisons on log scales reveal both proportional returns and a thin tail of very
+          high earners.
+        </p>
+        <p>
+          <strong>Future work.</strong> We could merge country or language with the year chart for small multiples, apply inflation-adjusted
+          dollars for long-run finance comparisons, and use text features from <code>overview</code> or keywords for topic modeling. A
+          follow-up study could also filter to theatrically released films only to reduce noise from micro-budget entries.
+        </p>
+        <p>
+          <strong>Suggestions.</strong> (1) Treat vote count as a visibility threshold before interpreting averages. (2) Keep log or robust
+          scales whenever budget and revenue appear together. (3) When reporting genre share, acknowledge multi-label rows so percentages are
+          described as “genre tags” rather than mutually exclusive buckets.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>DS4200 — static site for GitHub Pages. Chart assets generated with <code>generate_visualizations.py</code>.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="js/d3-timeline.js"></script>
+    <script src="js/d3-scatter.js"></script>
+  </body>
+</html>

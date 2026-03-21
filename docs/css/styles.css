@@ -1,0 +1,215 @@
+/* TMDB project — cohesive teal / coral palette */
+:root {
+  --bg: #f7f9fb;
+  --surface: #ffffff;
+  --text: #0d1b2a;
+  --muted: #415a77;
+  --teal: #1a535c;
+  --coral: #ff6b35;
+  --mint: #4ecdc4;
+  --border: #d9e2ec;
+  --maxw: 920px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 1rem;
+}
+
+a {
+  color: var(--teal);
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  color: var(--coral);
+}
+
+header {
+  background: linear-gradient(135deg, var(--teal) 0%, #0f3539 100%);
+  color: #fff;
+  padding: 2.5rem 1.25rem 2rem;
+}
+
+header h1 {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  letter-spacing: -0.02em;
+}
+
+header p {
+  margin: 0;
+  max-width: var(--maxw);
+  opacity: 0.92;
+  font-size: 1.05rem;
+}
+
+main {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+section {
+  margin-bottom: 2.75rem;
+}
+
+section h2 {
+  font-size: 1.35rem;
+  color: var(--teal);
+  border-bottom: 2px solid var(--mint);
+  padding-bottom: 0.35rem;
+  margin-top: 0;
+}
+
+section h3 {
+  font-size: 1.1rem;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--text);
+}
+
+.viz-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1rem 1.25rem;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(13, 27, 42, 0.06);
+}
+
+.viz-block .caption-title {
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: var(--text);
+}
+
+.viz-block .howto {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0 0 0.75rem;
+}
+
+.viz-block img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.viz-block iframe {
+  width: 100%;
+  min-height: 420px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.takeaway {
+  margin: 0.75rem 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.takeaway strong {
+  color: var(--text);
+}
+
+ul.ref-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 1.25rem 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* D3 charts */
+.d3-wrap {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.d3-wrap svg {
+  display: block;
+  font-family: inherit;
+}
+
+.axis text {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.axis path,
+.axis line {
+  stroke: var(--border);
+}
+
+.brush .selection {
+  fill: var(--mint);
+  fill-opacity: 0.35;
+  stroke: var(--teal);
+}
+
+.tooltip-d3 {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(13, 27, 42, 0.92);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  max-width: 260px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.controls-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.controls-row select,
+.controls-row input[type="range"] {
+  accent-color: var(--teal);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-right: 0.75rem;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}

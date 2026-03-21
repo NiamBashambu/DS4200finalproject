@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@6.1.0"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}, "axis": {"labelFontSize": 11, "titleFontSize": 12}, "title": {"anchor": "start", "color": "#0d1b2a", "fontSize": 16}}, "data": {"name": "data-a2e4b1eb1f522ea6007b60c85d31a2d8"}, "mark": {"type": "bar", "color": "#1a535c", "cornerRadiusEnd": 4}, "encoding": {"tooltip": [{"field": "genre", "type": "nominal"}, {"field": "movies", "type": "quantitative"}], "x": {"field": "movies", "title": "Number of films (genre tags)", "type": "quantitative"}, "y": {"field": "genre", "sort": "-x", "title": "Genre", "type": "nominal"}}, "height": 320, "title": "Top genres in the sample", "width": 520, "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json", "datasets": {"data-a2e4b1eb1f522ea6007b60c85d31a2d8": [{"genre": "Drama", "movies": 1870}, {"genre": "Documentary", "movies": 1366}, {"genre": "Comedy", "movies": 1154}, {"genre": "Animation", "movies": 470}, {"genre": "Horror", "movies": 450}, {"genre": "Romance", "movies": 432}, {"genre": "Thriller", "movies": 414}, {"genre": "Music", "movies": 397}, {"genre": "Action", "movies": 344}, {"genre": "Crime", "movies": 269}, {"genre": "Family", "movies": 209}, {"genre": "TV Movie", "movies": 205}]}};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
