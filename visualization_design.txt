@@ -1,0 +1,28 @@
+DS4200 Final Project - Visualization Design Notes
+
+Project repository link:
+https://github.com/NiamBashambu/DS4200finalproject
+
+Published website link:
+https://niambashambu.github.io/DS4200finalproject/
+
+Overview of design approach:
+We designed the website with a consistent visual style and a logical storytelling flow from broad context to detailed comparison. The sequence starts with a time-based overview, moves into composition (genres) and distribution (runtime), then shifts to multivariable relationships (heatmap), and ends with a detailed financial comparison (scatter). Across figures we kept clear titles, axis labels, readable text, and a coordinated color theme so the page feels cohesive and easy to navigate.
+
+Figure 1 - Release-year trend (D3 line + brush):
+Design idea: We used a line chart with a shaded area to emphasize overall growth and trend shape across years. The main chart is paired with a brushed timeline below so users can zoom into any period without losing context. This layout supports both overview and detail in one figure and makes temporal comparison intuitive. Colors were customized (teal/orange contrast) so the selected interaction region is visually distinct.
+
+Figure 2 - Genre mix (Altair horizontal bar chart):
+Design idea: We chose a horizontal bar chart because category names are long and easier to read on the y-axis. Sorting bars by count makes the ranking immediately clear and supports quick comparison of dominant genres. A single primary hue keeps attention on magnitude rather than unnecessary decoration, while tooltips provide exact values when needed. This figure acts as a bridge from timeline context to content composition.
+
+Figure 3 - Runtime distribution (Altair linked histogram):
+Design idea: Runtime is best shown as a distribution, so we used a binned histogram. To make the chart interactive and exploratory, we added a brush-selection in the top panel and a linked lower panel that updates to show only the selected range. This two-panel layout helps users inspect common movie lengths while still seeing the global distribution. The chart uses customized bins, panel sizing, and coordinated color/opacity to improve readability.
+
+Figure 4 - Numeric associations (Matplotlib heatmap):
+Design idea: We used a correlation heatmap to summarize relationships among several quantitative variables in one compact view. Because financial and popularity variables are highly skewed, we applied log scaling before computing correlation so patterns are more interpretable. The diverging palette and value annotations help users detect positive/negative strength quickly. This figure provides an intermediate analytical layer before the point-level scatterplot.
+
+Figure 5 - Budget vs Revenue (D3 scatter with controls):
+Design idea: We chose a scatterplot to show point-level variation and outliers in budget-revenue relationships. Log scales were used on both axes to handle extreme values and make mid-range patterns visible. Interactions include a genre dropdown, minimum vote-count slider, and hover tooltip with exact values; these controls help users compare subgroups and reduce noise from low-information points. Color encoding by genre and interactive filtering make the chart both informative and practical to explore.
+
+How the five figures connect:
+The figures are intentionally linked as a narrative: (1) when movies appear over time, (2) what genres dominate, (3) how long movies usually are, (4) how key numeric fields relate overall, and (5) how budget translates to revenue at the title level. This progression supports constructive conclusions and makes the website feel like one analysis rather than five independent charts.
