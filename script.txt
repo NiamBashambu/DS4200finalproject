@@ -1,0 +1,42 @@
+0:00–0:45 — Opening
+“Hi, we’re [Group name]. This is our DS 4200 final project. We’re presenting our published webpage—not slides—so you can follow along at https://niambashambu.github.io/DS4200finalproject/. Our repo is on GitHub if you want the code. We’ll walk through what we studied, how we designed our charts, how the interactive pieces support our questions, and what we learned.”
+
+(Share screen: homepage, scroll slightly so the title and Introduction are visible.)
+
+0:45–2:15 — Topic and tasks
+“Our topic is the TMDB movie catalog: publicly listed films with metadata like release date, genres, runtime, votes, popularity, budget, and revenue.
+
+Our tasks were: first, sample and work with a manageable dataset—we use a random sample of 10,000 rows from a larger TMDB-style export, saved as TMDB_movie_dataset_v11_10000.csv, with 24 attributes per title. Second, we built five linked visualizations that tell one story: from when films appear in the data, to what genres dominate, how long movies typically run, how numeric variables relate in aggregate, and finally budget versus revenue at the title level. Third, we added interactions—time brushing, runtime brushing, and filters on the scatterplot—so a reader can explore without writing code. Everything lives on this static site built for the course.”
+
+(Scroll through Introduction and Data so the audience sees the written summary.)
+
+2:15–5:00 — Static visualizations and design
+“We split our views into static and interactive for clarity.
+
+Static — Figure 2, genre mix. This is an Altair horizontal bar chart of the most frequent primary genre tags. We used horizontal bars because genre names are long and read cleanly on the y-axis. We sorted by count so the ranking is immediate, and we kept a single main color so attention stays on magnitude, not rainbow decoration. Tooltips or labels give exact counts when needed. The point is compositional: Drama, Comedy, and related labels dominate this slice, which frames how we interpret later charts.
+
+Static — Figure 4, correlation heatmap. We used Matplotlib for a compact summary of relationships among vote average, vote count, revenue, runtime, popularity, and budget. Financial and popularity fields are skewed, so we log-scaled before correlation so the matrix is easier to read. The diverging palette and annotated cells make strength and direction quick to see. This chart sits between the distribution views and the scatter: it answers ‘in general, what moves with what?’ before we show individual films.
+
+Design across the page: We kept consistent titles, axis labels, and a coordinated color theme so the site reads as one analysis, not five unrelated plots. The order is intentional: broad context → composition → distribution → multivariate summary → financial detail.”
+
+(Show Figure 2 image, then Figure 4 heatmap; pause on the takeaway lines on the page if helpful.)
+
+5:00–8:30 — Interactive visualizations + live demo
+“Now the interactive pieces and how they address our tasks.
+
+Figure 1 — D3 line chart with brush. We show count of sampled films by release year as a line with a shaded area to emphasize growth and shape. Below it, an orange brush on a mini timeline lets you select a year range; the main chart rescales to that window so you keep overview and detail in one figure. Demo: I’ll drag the brush across, say, the 1990s versus the 2010s so you can see how catalog density changes—our sample is densest after roughly 2000, consistent with more titles in TMDB over time.
+
+Figure 3 — Altair linked histogram. Runtime is a distribution, so we used a binned histogram. The top panel has a brush on the x-axis; the bottom panel updates to show the distribution within the selected runtime range. Demo: I’ll drag a selection around typical feature length—roughly 80 to 120 minutes—and show how the linked view behaves. That supports our task of describing typical movie length while still seeing the global shape.
+
+Figure 5 — D3 scatter, budget vs revenue. For titles with positive budget and revenue, we use log scales on both axes so mid-range patterns and extremes are visible. Points are colored by genre. Demo: I’ll open the genre dropdown and switch from all genres to a specific genre to see whether the budget–revenue pattern holds within that group. Then I’ll move the minimum vote-count slider to filter out titles with almost no ratings, which reduces noise when we care about meaningful engagement. Hover shows exact budget, revenue, and rating. On log scales, many points sit near the diagonal—similar order of magnitude for budget and revenue—while a thin tail stretches along high revenue; genre filtering shows that pattern isn’t limited to one category.”
+
+(Actually perform the brush, histogram selection, genre change, slider, and one hover—keep each demo step under ~20–30 seconds.)
+
+8:30–9:45 — What we learned
+“Conclusions from the visualization: First, TMDB coverage in our sample is uneven over time but thickens after 2000, so any ‘trends’ must be read as catalog plus sampling, not only industry production. Second, genres in this slice lean toward broad categories like Drama and Comedy. Third, runtimes cluster near standard feature length. Fourth, from the heatmap, vote count and popularity move together, but average rating is only weakly related to revenue—big box office and high user rating are not the same thing. Fifth, on the scatter with log scales, we see many proportional returns and a small set of very high earners; filtering by votes reminds us to treat visibility seriously when we interpret ratings or money.
+
+We also learned visualization design lessons: log and robust scaling for skewed money fields; brushing for overview plus detail; and honest framing of multi-label genres as tags, not mutually exclusive buckets.”
+
+9:45–10:00 — Close
+“That’s our project: Stories in the Data on TMDB, five linked views, and interactions that support the same research questions. Thank you—we’re happy to take questions.”
+

@@ -51,7 +51,7 @@ def save_year_counts(df: pd.DataFrame) -> None:
 
 def save_scatter_points(df: pd.DataFrame) -> None:
     sub = df[(df["budget"] > 0) & (df["revenue"] > 0)].copy()
-    sub = sub.head(2000)  # keep page light
+    sub = sub.head(2000) 
     sub["primary_genre"] = sub["genres"].fillna("Unknown").str.split(",").str[0].str.strip()
     records = []
     for _, r in sub.iterrows():
