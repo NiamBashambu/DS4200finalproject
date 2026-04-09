@@ -1,7 +1,4 @@
-/**
- * D3 line chart: films per release year + brush to zoom the main view.
- * Loads assets/generated/year_counts.json (run generate_visualizations.py first).
- */
+
 (function () {
   const container = document.getElementById("chart-timeline");
   if (!container) return;

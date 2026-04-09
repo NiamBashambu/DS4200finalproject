@@ -1,6 +1,4 @@
-/**
- * D3 scatter: log budget vs log revenue, tooltip on hover, genre filter + vote-count slider.
- */
+
 (function () {
   const container = document.getElementById("chart-scatter");
   const tooltip = document.getElementById("scatter-tooltip");
