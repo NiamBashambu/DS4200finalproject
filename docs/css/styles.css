@@ -109,7 +109,7 @@ section h3 {
 
 .viz-block iframe {
   width: 100%;
-  min-height: 420px;
+  min-height: 620px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #fff;

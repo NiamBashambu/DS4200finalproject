@@ -53,7 +53,7 @@
 
   d3.json("assets/generated/budget_revenue_points.json")
     .then((raw) => {
-      const data = raw.filter((d) => d.budget > 0 && d.revenue > 0);
+      const data = raw.filter((d) => d.budget > 0 || d.revenue > 0);
       const genres = Array.from(new Set(data.map((d) => d.genre))).sort((a, b) => a.localeCompare(b));
       genres.forEach((g) => {
         const opt = document.createElement("option");
@@ -68,13 +68,47 @@
       const xAxis = g.append("g").attr("class", "axis").attr("transform", `translate(0,${innerH})`);
       const yAxis = g.append("g").attr("class", "axis");
 
-      g.append("text").attr("x", innerW / 2).attr("y", innerH + 40).attr("text-anchor", "middle").attr("fill", "#415a77").style("font-size", "11px").text("Budget (USD, log scale)");
+      g.append("text").attr("x", innerW / 2).attr("y", innerH + 40).attr("text-anchor", "middle").attr("fill", "#415a77").style("font-size", "11px").text("Budget + 1 (USD, log scale; +1 so zeros plot)");
 
-      g.append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("x", -innerH / 2).attr("text-anchor", "middle").attr("fill", "#415a77").style("font-size", "11px").text("Revenue (USD, log scale)");
+      g.append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("x", -innerH / 2).attr("text-anchor", "middle").attr("fill", "#415a77").style("font-size", "11px").text("Revenue + 1 (USD, log scale)");
 
       g.append("text").attr("x", 0).attr("y", -8).attr("fill", "#0d1b2a").style("font-size", "14px").style("font-weight", "600").text("Budget vs. revenue (profitable-volume films)");
 
+      const countLabel = g
+        .append("text")
+        .attr("x", innerW)
+        .attr("y", -8)
+        .attr("text-anchor", "end")
+        .attr("fill", "#415a77")
+        .style("font-size", "11px");
+
       const dots = g.append("g").attr("class", "dots");
+      const regLayer = g.append("path").attr("class", "regression-line").attr("fill", "none").attr("stroke", "#c1121f").attr("stroke-width", 2.5).attr("stroke-linejoin", "round");
+
+      function bx(d) {
+        return d.budget + 1;
+      }
+      function ry(d) {
+        return d.revenue + 1;
+      }
+
+      function logLogRegression(points) {
+        const xs = points.map((d) => Math.log10(bx(d)));
+        const ys = points.map((d) => Math.log10(ry(d)));
+        const n = xs.length;
+        const mx = d3.mean(xs);
+        const my = d3.mean(ys);
+        let num = 0;
+        let den = 0;
+        for (let i = 0; i < n; i++) {
+          const dx = xs[i] - mx;
+          num += dx * (ys[i] - my);
+          den += dx * dx;
+        }
+        const slope = den === 0 ? 0 : num / den;
+        const intercept = my - slope * mx;
+        return { slope, intercept };
+      }
 
       function update() {
         const gval = genreSelect.value;
@@ -87,10 +121,15 @@
           return true;
         });
 
-        const bExtent = d3.extent(filtered, (d) => d.budget);
-        const rExtent = d3.extent(filtered, (d) => d.revenue);
+        countLabel.text(
+          `Showing ${filtered.length.toLocaleString()} of ${data.length.toLocaleString()} titles (budget > 0 or revenue > 0 in the 10k sample)`
+        );
+
+        const bExtent = d3.extent(filtered, (d) => bx(d));
+        const rExtent = d3.extent(filtered, (d) => ry(d));
         if (!bExtent[0] || !rExtent[0] || filtered.length === 0) {
           dots.selectAll("circle").remove();
+          regLayer.attr("d", null);
           return;
         }
         x.domain([Math.max(1, bExtent[0]), bExtent[1]]).nice();
@@ -110,13 +149,25 @@
               .attr("fill-opacity", 0.75)
               .attr("stroke", "#fff")
               .attr("stroke-width", 1)
-              .attr("cx", (d) => x(d.budget))
-              .attr("cy", (d) => y(d.revenue))
+              .attr("cx", (d) => x(bx(d)))
+              .attr("cy", (d) => y(ry(d)))
               .on("mousemove", (ev, d) => showTip(ev, d))
               .on("mouseleave", hideTip),
-          (update) => update.attr("cx", (d) => x(d.budget)).attr("cy", (d) => y(d.revenue)),
+          (update) => update.attr("cx", (d) => x(bx(d))).attr("cy", (d) => y(ry(d))),
           (exit) => exit.remove()
         );
+
+        if (filtered.length >= 2) {
+          const { slope, intercept } = logLogRegression(filtered);
+          const b0 = Math.max(1, bExtent[0]);
+          const b1 = bExtent[1];
+          const logRev = (bPlus1) => intercept + slope * Math.log10(bPlus1);
+          const r0 = Math.pow(10, logRev(b0));
+          const r1 = Math.pow(10, logRev(b1));
+          regLayer.attr("d", `M${x(b0)},${y(r0)}L${x(b1)},${y(r1)}`).style("display", null);
+        } else {
+          regLayer.attr("d", null).style("display", "none");
+        }
       }
 
       genreSelect.addEventListener("change", update);

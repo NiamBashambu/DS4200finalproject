@@ -50,8 +50,8 @@ def save_year_counts(df: pd.DataFrame) -> None:
 
 
 def save_scatter_points(df: pd.DataFrame) -> None:
-    sub = df[(df["budget"] > 0) & (df["revenue"] > 0)].copy()
-    sub = sub.head(2000) 
+    # TMDB often leaves one of these at zero; requiring both > 0 leaves only ~1% of rows.
+    sub = df[(df["budget"] > 0) | (df["revenue"] > 0)].copy()
     sub["primary_genre"] = sub["genres"].fillna("Unknown").str.split(",").str[0].str.strip()
     records = []
     for _, r in sub.iterrows():
@@ -89,27 +89,30 @@ def altair_top_genres(gen_df: pd.DataFrame) -> None:
 
 
 def altair_runtime_hist(df: pd.DataFrame) -> None:
-    run = df[(df["runtime"] > 0) & (df["runtime"] < 400)]["runtime"]
-    data = run.to_frame(name="runtime")
+    plot_df = df[(df["runtime"] > 0) & (df["runtime"] < 400)].copy()
+    pg = plot_df["genres"].fillna("Unknown").astype(str).str.split(",").str[0].str.strip()
+    plot_df["primary_genre"] = pg.mask(pg.eq(""), "Unknown")
     brush = alt.selection_interval(encodings=["x"], empty="all")
-    base = (
-        alt.Chart(data)
+    upper = (
+        alt.Chart(plot_df)
         .mark_bar(cornerRadius=2, color=ACCENT2)
         .encode(
             alt.X("runtime:Q", bin=alt.Bin(maxbins=35), title="Runtime (minutes)"),
             alt.Y("count():Q", title="Count"),
         )
+        .add_params(brush)
+        .properties(width=560, height=260, title="Runtime distribution (brush a range)")
     )
-    upper = base.add_params(brush).properties(width=560, height=260, title="Runtime distribution (brush to filter)")
     lower = (
-        alt.Chart(data)
-        .mark_area(color=THEME, opacity=0.4)
+        alt.Chart(plot_df)
+        .mark_bar(cornerRadiusEnd=3, color=THEME)
         .encode(
-            alt.X("runtime:Q", bin=alt.Bin(maxbins=35), title="Runtime (minutes)"),
-            alt.Y("count():Q", title=""),
+            x=alt.X("count():Q", title="Films in brushed runtime window"),
+            y=alt.Y("primary_genre:N", sort="-x", title="Primary genre"),
+            tooltip=["primary_genre", alt.Tooltip("count()", title="Films")],
         )
         .transform_filter(brush)
-        .properties(width=560, height=120, title="Zoomed view (same brush)")
+        .properties(width=560, height=280, title="Primary genre mix for the brushed runtimes")
     )
     combined = upper & lower
     combined.save(str(OUT / "altair_runtime_brush.html"))
@@ -128,6 +131,9 @@ def matplotlib_correlation_heatmap(df: pd.DataFrame) -> None:
         annot=True,
         fmt=".2f",
         cmap=cmap,
+        center=0,
+        vmin=-1,
+        vmax=1,
         square=True,
         linewidths=0.5,
         cbar_kws={"shrink": 0.75},

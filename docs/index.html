@@ -20,7 +20,7 @@
         <h2>Introduction</h2>
         <p>
           Our team studies publicly listed movies from The Movie Database (TMDB) to understand long-run catalog growth, genre mix, typical
-          runtimes, correlations among numeric popularity fields, and how reported budget relates to revenue when both are available. The
+          runtimes, correlations among numeric popularity fields, and how reported budget relates to revenue when financial fields are present. The
           tasks were to sample and clean the table, build five linked views that move from <em>when</em> films appear in the data to
           <em>what kinds</em> of films they are and <em>how money and ratings behave</em>, and to implement interactions so visitors can
           focus on a time range, genre, or voting threshold without editing code.
@@ -35,8 +35,9 @@
           <strong>24 attributes</strong>, including identifiers, text fields (<code>title</code>, <code>overview</code>),
           <code>release_date</code>, <code>genres</code> (comma-separated labels), <code>vote_average</code>, <code>vote_count</code>,
           <code>revenue</code>, <code>budget</code>, <code>runtime</code>, <code>popularity</code>, and production country and language
-          metadata. Missing values are common for optional text; we restrict certain charts to rows with positive runtime or positive budget
-          and revenue where needed.
+          metadata. Missing values are common for optional text; we restrict certain charts to rows with positive runtime where needed. The
+          budget–revenue scatter includes titles with <strong>either</strong> budget or revenue above zero (TMDB often leaves one at zero), and
+          uses <code>budget + 1</code> and <code>revenue + 1</code> on log axes so zero-dollar fields still appear.
         </p>
         <p><strong>References</strong></p>
         <ul class="ref-list">
@@ -82,15 +83,15 @@
       <section id="viz-runtime">
         <h2>3. Runtime distribution (Altair — linked histogram)</h2>
         <div class="viz-block">
-          <p class="caption-title">Figure 3. Histogram of runtime with linked brush</p>
+          <p class="caption-title">Figure 3. Runtime histogram with genre breakdown for the brushed range</p>
           <p class="howto">
-            <strong>How to use:</strong> Click and drag on the x-axis of the top histogram to select a runtime range; the lower panel shows
-            the filtered distribution.
+            <strong>How to use:</strong> Click and drag on the top histogram to select a runtime window; the lower panel counts films by
+            <em>primary</em> genre (first listed genre tag) among titles in that window.
           </p>
           <iframe src="assets/generated/altair_runtime_brush.html" title="Interactive Altair runtime histogram"></iframe>
           <p class="takeaway">
             <strong>Takeaway:</strong> Most non-missing runtimes cluster between roughly 80 and 120 minutes, matching conventional feature
-            length; very short or very long films are rare in this sample.
+            length; brushing highlights how genre mix shifts for very short versus standard-length films.
           </p>
         </div>
       </section>
@@ -98,14 +99,15 @@
       <section id="viz-heatmap">
         <h2>4. Numeric associations (Matplotlib — heatmap)</h2>
         <div class="viz-block">
-          <p class="caption-title">Figure 4. Correlation heatmap (log-scaled skewed fields)</p>
+          <p class="caption-title">Figure 4. Correlation heatmap (log-scaled skewed fields; color bar centered at 0)</p>
           <img
             src="assets/generated/heatmap_correlation.png"
             alt="Heatmap of correlations between vote average, vote count, revenue, runtime, popularity, and budget"
           />
           <p class="takeaway">
             <strong>Takeaway:</strong> Vote count and popularity move together, while vote average is only weakly related to revenue—big
-            box office and high user rating are not the same dimension in this data.
+            box office and high user rating are not the same dimension in this data. The color bar is centered at zero so near-white reads as
+            little linear association.
           </p>
         </div>
       </section>
@@ -113,10 +115,12 @@
       <section id="viz-scatter">
         <h2>5. Budget vs. revenue (D3 — scatter)</h2>
         <div class="viz-block">
-          <p class="caption-title">Figure 5. Log-scale scatter for titles with positive budget and revenue</p>
+          <p class="caption-title">Figure 5. Log-scale scatter of budget vs. revenue (either field may be zero in TMDB)</p>
           <p class="howto">
-            <strong>How to use:</strong> Choose a primary genre from the menu to restrict points; use the minimum vote-count slider to drop
-            obscure titles with almost no ratings. Hover any dot for exact budget, revenue, and rating.
+            <strong>How to use:</strong> Points include every sample row with budget <em>or</em> revenue &gt; 0 (see the count in the chart).
+            Axes use <code>value + 1</code> before the log transform so a literal zero still maps into the scale. Optionally choose a primary
+            genre or raise the minimum vote count. The red line is OLS in log–log space on those shifted values. Hover any dot for exact
+            budget, revenue, and rating.
           </p>
           <div class="controls-row">
             <label>
@@ -134,8 +138,8 @@
           <div id="chart-scatter" class="d3-wrap" aria-label="Scatter of budget versus revenue"></div>
           <div id="scatter-tooltip" class="tooltip-d3" style="opacity: 0"></div>
           <p class="takeaway">
-            <strong>Takeaway:</strong> On log scales, many films sit near the diagonal (similar order of magnitude for budget and revenue),
-            while blockbusters stretch far along the revenue axis—genre filtering shows that pattern holds across several major categories.
+            <strong>Takeaway:</strong> Financial fields are sparse in TMDB, so widening the inclusion rule surfaces more titles; the trend line
+            summarizes the association on log–log scales while individual zeros (shifted by +1) remain interpretable as very small dollars.
           </p>
         </div>
       </section>
