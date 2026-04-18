@@ -39,6 +39,21 @@
           budget–revenue scatter includes titles with <strong>either</strong> budget or revenue above zero (TMDB often leaves one at zero), and
           uses <code>budget + 1</code> and <code>revenue + 1</code> on log axes so zero-dollar fields still appear.
         </p>
+        <p><strong>Terminology and abbreviations used in this project</strong></p>
+        <ul>
+          <li><strong>TMDB:</strong> The Movie Database, the source platform for movie metadata.</li>
+          <li><strong>Primary genre:</strong> The first genre label in a movie's multi-genre tag list.</li>
+          <li><strong>OLS:</strong> Ordinary Least Squares, used for the fitted trend line in the scatter plot.</li>
+          <li><strong>Log scale:</strong> Axes plotted on transformed values (<code>value + 1</code>) to handle skew and zeros.</li>
+        </ul>
+        <p><strong>Key feature groups (used across the analysis)</strong></p>
+        <ul>
+          <li><strong>Time and release context:</strong> <code>release_date</code>, derived <code>release_year</code></li>
+          <li><strong>Content and category:</strong> <code>genres</code>, <code>original_language</code>, <code>production_countries</code></li>
+          <li><strong>Audience response:</strong> <code>vote_average</code>, <code>vote_count</code>, <code>popularity</code></li>
+          <li><strong>Production and financial scale:</strong> <code>runtime</code>, <code>budget</code>, <code>revenue</code></li>
+          <li><strong>Identification and metadata:</strong> <code>id</code>, <code>title</code>, <code>overview</code></li>
+        </ul>
         <p><strong>References</strong></p>
         <ul class="ref-list">
           <li>
@@ -161,6 +176,11 @@
           <strong>Suggestions.</strong> (1) Treat vote count as a visibility threshold before interpreting averages. (2) Keep log or robust
           scales whenever budget and revenue appear together. (3) When reporting genre share, acknowledge multi-label rows so percentages are
           described as “genre tags” rather than mutually exclusive buckets.
+        </p>
+        <p>
+          <strong>Presentation consistency check.</strong> We use a shared visual style across views (consistent background, type scale, and
+          recurring colors for repeated concepts such as time trends and financial relationships), keep categorical palettes bounded, and
+          reserve interaction for tasks where filtering or brushing answers within-group comparison questions.
         </p>
       </section>
     </main>
