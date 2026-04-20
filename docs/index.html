@@ -35,9 +35,8 @@
           <strong>24 attributes</strong>, including identifiers, text fields (<code>title</code>, <code>overview</code>),
           <code>release_date</code>, <code>genres</code> (comma-separated labels), <code>vote_average</code>, <code>vote_count</code>,
           <code>revenue</code>, <code>budget</code>, <code>runtime</code>, <code>popularity</code>, and production country and language
-          metadata. Missing values are common for optional text; we restrict certain charts to rows with positive runtime where needed. The
-          budget–revenue scatter includes titles with <strong>either</strong> budget or revenue above zero (TMDB often leaves one at zero), and
-          uses <code>budget + 1</code> and <code>revenue + 1</code> on log axes so zero-dollar fields still appear.
+          metadata. Missing values are common for optional text; we restrict certain charts to rows with positive runtime or positive budget
+          and revenue where needed.
         </p>
         <p><strong>Terminology and abbreviations used in this project</strong></p>
         <ul>
@@ -130,12 +129,10 @@
       <section id="viz-scatter">
         <h2>5. Budget vs. revenue (D3 — scatter)</h2>
         <div class="viz-block">
-          <p class="caption-title">Figure 5. Log-scale scatter of budget vs. revenue (either field may be zero in TMDB)</p>
+          <p class="caption-title">Figure 5. Log-scale scatter for titles with positive budget and revenue</p>
           <p class="howto">
-            <strong>How to use:</strong> Points include every sample row with budget <em>or</em> revenue &gt; 0 (see the count in the chart).
-            Axes use <code>value + 1</code> before the log transform so a literal zero still maps into the scale. Optionally choose a primary
-            genre or raise the minimum vote count. The red line is OLS in log–log space on those shifted values. Hover any dot for exact
-            budget, revenue, and rating.
+            <strong>How to use:</strong> Choose a primary genre from the menu to restrict points; use the minimum vote-count slider to drop
+            obscure titles with almost no ratings. Hover any dot for exact budget, revenue, and rating.
           </p>
           <div class="controls-row">
             <label>
@@ -153,8 +150,8 @@
           <div id="chart-scatter" class="d3-wrap" aria-label="Scatter of budget versus revenue"></div>
           <div id="scatter-tooltip" class="tooltip-d3" style="opacity: 0"></div>
           <p class="takeaway">
-            <strong>Takeaway:</strong> Financial fields are sparse in TMDB, so widening the inclusion rule surfaces more titles; the trend line
-            summarizes the association on log–log scales while individual zeros (shifted by +1) remain interpretable as very small dollars.
+            <strong>Takeaway:</strong> On log scales, many films sit near the diagonal (similar order of magnitude for budget and revenue),
+            while blockbusters stretch far along the revenue axis—genre filtering shows that pattern holds across several major categories.
           </p>
         </div>
       </section>
